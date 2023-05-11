@@ -1,13 +1,15 @@
 "use client";
 
+import axios from "axios";
 import { useCallback, useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { BsGithub, BsGoogle } from "react-icons/bs";
+import { toast } from "react-hot-toast";
+import { signIn } from "next-auth/react";
 
 import Button from "@/app/components/Button";
 import Input from "@/app/components/inputs/Input";
 import AuthSocialButton from "./AuthSocialButton";
-import axios from "axios";
 
 type Variant = "LOGIN" | "REGISTER";
 
@@ -51,19 +53,53 @@ function AuthForm() {
     setIsLoading(true);
 
     if (variant === "LOGIN") {
-      console.log("Logging in with data:", data);
-      // TODO: NextAuth login
+      signIn("credentials", {
+        ...data,
+        redirect: false,
+      })
+        .then((callback) => {
+          if (callback?.error) {
+            toast.error("Invalid credentials. Please try again.");
+          }
+
+          if (callback?.ok && !callback?.error) {
+            toast.success("Successfully logged in!");
+          }
+        })
+        .finally(() => setIsLoading(false));
     }
 
     if (variant === "REGISTER") {
-      axios.post("/api/register", data);
+      axios
+        .post("/api/register", data)
+        .then(() => toast.success("Welcome aboard! Your account is now ready."))
+        .catch(() => toast.error("Something went wrong. Please try again."))
+        .finally(() => setIsLoading(false));
+
+      // TODO: See if we can use this alternative with loading state
+      // toast.promise(registerPromise, {
+      //   loading: "Creating account...",
+      //   success: "Success! Welcome aboard!",
+      //   error: "Something went wrong. Please try again.",
+      // });
     }
   };
 
   /** Login or register user using social */
   const authViaSocial = (social: string) => {
-    console.log("Logging in via", social);
-    // TODO: NextAuth social login
+    setIsLoading(true);
+
+    signIn(social, { redirect: false })
+      .then((callback) => {
+        if (callback?.error) {
+          toast.error("Unable to authenticate. Please try again.");
+        }
+
+        if (callback?.ok && !callback?.error) {
+          toast.success("Successfully logged in!");
+        }
+      })
+      .finally(() => setIsLoading(false));
   };
 
   return (
@@ -94,7 +130,6 @@ function AuthForm() {
                 register={register}
                 errors={errors}
                 disabled={isLoading}
-                required
               />
               <Input
                 id="lastName"
@@ -102,7 +137,6 @@ function AuthForm() {
                 register={register}
                 errors={errors}
                 disabled={isLoading}
-                required
               />
             </>
           )}
@@ -113,7 +147,6 @@ function AuthForm() {
             errors={errors}
             type="email"
             disabled={isLoading}
-            required
           />
           <Input
             id="password"
@@ -122,7 +155,6 @@ function AuthForm() {
             errors={errors}
             type="password"
             disabled={isLoading}
-            required
           />
           <div>
             <Button type="submit" disabled={isLoading} fullWidth>
