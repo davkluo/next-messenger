@@ -45,20 +45,25 @@ function AuthForm() {
     },
   });
 
+  /** Login or register user upon form submission, depending on variant */
   const submitAuthForm: SubmitHandler<FieldValues> = (data) => {
     setIsLoading(true);
 
     if (variant === "LOGIN") {
       console.log("Logging in with data:", data);
+      // TODO: NextAuth login
     }
 
     if (variant === "REGISTER") {
       console.log("Registering with data:", data);
+      // TODO: Register user
     }
   };
 
+  /** Login or register user using social */
   const authViaSocial = (social: string) => {
     console.log("Logging in via", social);
+    // TODO: NextAuth social login
   };
 
   return (
@@ -88,6 +93,7 @@ function AuthForm() {
                 label="First Name"
                 register={register}
                 errors={errors}
+                disabled={isLoading}
                 required
               />
               <Input
@@ -95,6 +101,7 @@ function AuthForm() {
                 label="Last Name"
                 register={register}
                 errors={errors}
+                disabled={isLoading}
                 required
               />
             </>
@@ -105,6 +112,7 @@ function AuthForm() {
             register={register}
             errors={errors}
             type="email"
+            disabled={isLoading}
             required
           />
           <Input
@@ -113,6 +121,7 @@ function AuthForm() {
             register={register}
             errors={errors}
             type="password"
+            disabled={isLoading}
             required
           />
           <div>
