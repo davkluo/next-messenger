@@ -1,9 +1,12 @@
 "use client";
 
-import Button from "@/app/components/Button";
-import Input from "@/app/components/inputs/Input";
 import { useCallback, useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import { BsGithub, BsGoogle } from "react-icons/bs";
+
+import Button from "@/app/components/Button";
+import Input from "@/app/components/inputs/Input";
+import AuthSocialButton from "./AuthSocialButton";
 
 type Variant = "LOGIN" | "REGISTER";
 
@@ -42,7 +45,7 @@ function AuthForm() {
     },
   });
 
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
+  const submitAuthForm: SubmitHandler<FieldValues> = (data) => {
     setIsLoading(true);
 
     if (variant === "LOGIN") {
@@ -52,6 +55,10 @@ function AuthForm() {
     if (variant === "REGISTER") {
       console.log("Registering with data:", data);
     }
+  };
+
+  const loginViaSocial = (social: string) => {
+    console.log("Logging in via", social);
   };
 
   return (
@@ -73,7 +80,7 @@ function AuthForm() {
           sm:px-10
         "
       >
-        <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+        <form className="space-y-6" onSubmit={handleSubmit(submitAuthForm)}>
           {variant === "REGISTER" && (
             <>
               <Input
@@ -134,7 +141,37 @@ function AuthForm() {
             </div>
           </div>
 
-          <div className="mt-6 flex gap-2">Auth Social Buttons</div>
+          <div className="mt-6 flex gap-2">
+            <AuthSocialButton
+              icon={BsGithub}
+              onClick={() => loginViaSocial("github")}
+            />
+            <AuthSocialButton
+              icon={BsGoogle}
+              onClick={() => loginViaSocial("google")}
+            />
+          </div>
+
+          <div
+            className="
+            flex
+            gap-2
+            justify-center
+            text-sm
+            mt-6
+            px-2
+            text-gray-500
+          "
+          >
+            <div>
+              {variant === "LOGIN"
+                ? "Don't have an account?"
+                : "Already have an account?"}
+            </div>
+            <div onClick={toggleVariant} className="underline cursor-pointer">
+              {variant === "LOGIN" ? "Create one today!" : "Log in here!"}
+            </div>
+          </div>
         </div>
       </div>
     </div>
