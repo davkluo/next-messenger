@@ -62,8 +62,9 @@ function AuthForm() {
         sm:max-w-md
       "
     >
-      <div
+      <form
         className="
+          space-y-6
           bg-white
           px-4
           py-8
@@ -71,11 +72,43 @@ function AuthForm() {
           sm:rounded-lg
           sm:px-10
         "
+        onSubmit={handleSubmit(onSubmit)}
       >
-        <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
-          <Input label="First Name" />
-        </form>
-      </div>
+        {variant === "REGISTER" && (
+          <>
+            <Input
+              id="first-name"
+              label="First Name"
+              register={register}
+              errors={errors}
+              required={true}
+            />
+            <Input
+              id="last-name"
+              label="Last Name"
+              register={register}
+              errors={errors}
+              required={true}
+            />
+          </>
+        )}
+        <Input
+          id="email"
+          label="Email Address"
+          register={register}
+          errors={errors}
+          type="email"
+          required={true}
+        />
+        <Input
+          id="password"
+          label="Password"
+          register={register}
+          errors={errors}
+          type="password"
+          required={true}
+        />
+      </form>
     </div>
   );
 }
