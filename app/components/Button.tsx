@@ -67,4 +67,12 @@ const Button: React.FC<ButtonProps> = ({
   );
 };
 
+Button.defaultProps = {
+  type: "button",
+  fullWidth: false,
+  secondary: false,
+  danger: false,
+  disabled: false,
+};
+
 export default Button;

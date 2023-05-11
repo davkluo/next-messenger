@@ -88,14 +88,14 @@ function AuthForm() {
                 label="First Name"
                 register={register}
                 errors={errors}
-                required={true}
+                required
               />
               <Input
                 id="last-name"
                 label="Last Name"
                 register={register}
                 errors={errors}
-                required={true}
+                required
               />
             </>
           )}
@@ -105,7 +105,7 @@ function AuthForm() {
             register={register}
             errors={errors}
             type="email"
-            required={true}
+            required
           />
           <Input
             id="password"
@@ -113,7 +113,7 @@ function AuthForm() {
             register={register}
             errors={errors}
             type="password"
-            required={true}
+            required
           />
           <div>
             <Button type="submit" disabled={isLoading} fullWidth>
