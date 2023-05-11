@@ -18,7 +18,7 @@ type Variant = "LOGIN" | "REGISTER";
  *
  * Props:
  *
- * Home -> AuthForm
+ * Home -> AuthForm -> { AuthSocialButton, Input, Button }
  */
 
 function AuthForm() {
@@ -57,7 +57,7 @@ function AuthForm() {
     }
   };
 
-  const loginViaSocial = (social: string) => {
+  const authViaSocial = (social: string) => {
     console.log("Logging in via", social);
   };
 
@@ -144,11 +144,11 @@ function AuthForm() {
           <div className="mt-6 flex gap-2">
             <AuthSocialButton
               icon={BsGithub}
-              onClick={() => loginViaSocial("github")}
+              onClick={() => authViaSocial("github")}
             />
             <AuthSocialButton
               icon={BsGoogle}
-              onClick={() => loginViaSocial("google")}
+              onClick={() => authViaSocial("google")}
             />
           </div>
 

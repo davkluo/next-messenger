@@ -15,9 +15,6 @@ interface InputProps {
 
 /** Form Input Component
  *
- * State:
- * - None
- *
  * Props:
  * - id: HTML id attribute
  * - label: Input label

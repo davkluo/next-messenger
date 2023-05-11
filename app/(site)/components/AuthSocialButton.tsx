@@ -5,6 +5,15 @@ interface AuthSocialButtonProps {
   onClick: () => void;
 }
 
+/** Auth Social Button Component
+ *
+ * Props:
+ * - icon: Icon component from react-icons
+ * - onClick: Function to run when button is clicked
+ *
+ * AuthForm -> AuthSocialButton
+ */
+
 const AuthSocialButton: React.FC<AuthSocialButtonProps> = ({
   icon: Icon,
   onClick,

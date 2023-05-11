@@ -12,6 +12,20 @@ interface ButtonProps {
   disabled?: boolean;
 }
 
+/** Button Component
+ *
+ * Props:
+ * - type: Button type (defaults to "button")
+ * - fullWidth: Whether the button should be full width (defaults to false)
+ * - children: Button content
+ * - onClick: Function to run when button is clicked
+ * - secondary: Whether the button should be a secondary button (defaults to false)
+ * - danger: Whether the button should be a danger button (defaults to false)
+ * - disabled: Whether the button should be disabled (defaults to false)
+ *
+ * AuthForm -> Button
+ */
+
 const Button: React.FC<ButtonProps> = ({
   type,
   onClick,
