@@ -7,6 +7,7 @@ import { BsGithub, BsGoogle } from "react-icons/bs";
 import Button from "@/app/components/Button";
 import Input from "@/app/components/inputs/Input";
 import AuthSocialButton from "./AuthSocialButton";
+import axios from "axios";
 
 type Variant = "LOGIN" | "REGISTER";
 
@@ -55,8 +56,7 @@ function AuthForm() {
     }
 
     if (variant === "REGISTER") {
-      console.log("Registering with data:", data);
-      // TODO: Register user
+      axios.post("/api/register", data);
     }
   };
 
@@ -89,7 +89,7 @@ function AuthForm() {
           {variant === "REGISTER" && (
             <>
               <Input
-                id="first-name"
+                id="firstName"
                 label="First Name"
                 register={register}
                 errors={errors}
@@ -97,7 +97,7 @@ function AuthForm() {
                 required
               />
               <Input
-                id="last-name"
+                id="lastName"
                 label="Last Name"
                 register={register}
                 errors={errors}
