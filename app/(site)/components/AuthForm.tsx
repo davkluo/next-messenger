@@ -73,7 +73,7 @@ function AuthForm() {
         "
       >
         <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
-          <Input />
+          <Input label="First Name" />
         </form>
       </div>
     </div>
