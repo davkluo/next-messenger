@@ -45,14 +45,14 @@ const DesktopSidebar = () => {
             space-y-1
           "
         >
-          {routes.map((item) => (
+          {routes.map((route) => (
             <DesktopItem
-              key={item.label}
-              label={item.label}
-              href={item.href}
-              icon={item.icon}
-              onClick={item.onClick}
-              active={item.active}
+              key={route.label}
+              label={route.label}
+              href={route.href}
+              icon={route.icon}
+              onClick={route.onClick}
+              active={route.active}
             />
           ))}
         </ul>
