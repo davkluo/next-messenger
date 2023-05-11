@@ -32,9 +32,9 @@ const Input: React.FC<InputProps> = ({
   label,
   register,
   errors,
-  type,
-  required,
-  disabled,
+  type = "text",
+  required = false,
+  disabled = false,
 }) => {
   return (
     <div>
@@ -84,12 +84,6 @@ const Input: React.FC<InputProps> = ({
       />
     </div>
   );
-};
-
-Input.defaultProps = {
-  type: "text",
-  required: false,
-  disabled: false,
 };
 
 export default Input;

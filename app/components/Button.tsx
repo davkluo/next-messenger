@@ -15,10 +15,10 @@ interface ButtonProps {
 /** Button Component
  *
  * Props:
- * - type: Button type (defaults to "button")
- * - fullWidth: Whether the button should be full width (defaults to false)
  * - children: Button content
  * - onClick: Function to run when button is clicked
+ * - type: Button type (defaults to "button")
+ * - fullWidth: Whether the button should be full width (defaults to false)
  * - secondary: Whether the button should be a secondary button (defaults to false)
  * - danger: Whether the button should be a danger button (defaults to false)
  * - disabled: Whether the button should be disabled (defaults to false)
@@ -27,13 +27,13 @@ interface ButtonProps {
  */
 
 const Button: React.FC<ButtonProps> = ({
-  type,
-  onClick,
-  fullWidth,
   children,
-  secondary,
-  danger,
-  disabled,
+  onClick,
+  type = "button",
+  fullWidth = false,
+  secondary = false,
+  danger = false,
+  disabled = false,
 }) => {
   return (
     <button
@@ -65,14 +65,6 @@ const Button: React.FC<ButtonProps> = ({
       {children}
     </button>
   );
-};
-
-Button.defaultProps = {
-  type: "button",
-  fullWidth: false,
-  secondary: false,
-  danger: false,
-  disabled: false,
 };
 
 export default Button;
