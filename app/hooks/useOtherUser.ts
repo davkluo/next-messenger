@@ -5,7 +5,7 @@ import { FullConversation } from "../types";
 import { User } from "@prisma/client";
 
 // TODO: argument may need this type union | { users: User[] }
-const useOtherUser = (conversation: FullConversation) => {
+const useOtherUser = (conversation: FullConversation | { users: User[] }) => {
   const session = useSession();
 
   const otherUser = useMemo(() => {
