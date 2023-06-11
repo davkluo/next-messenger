@@ -85,7 +85,7 @@ const ConversationHeader: React.FC<ConversationHeaderProps> = ({
         </div>
         <HiEllipsisHorizontal
           size={32}
-          onClick={() => {}}
+          onClick={() => setIsDrawerOpen(true)}
           className="
             text-sky-500
             cursor-pointer
