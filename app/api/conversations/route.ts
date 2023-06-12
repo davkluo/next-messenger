@@ -16,7 +16,7 @@ export async function POST(request: Request) {
     }
 
     // Bad request if conversation name and members are missing for group chat
-    if (isGroup && (!name || !members)) {
+    if (isGroup && (!name || !members || members.length < 2)) {
       return new NextResponse("Missing fields", { status: 400 });
     }
 
@@ -28,8 +28,8 @@ export async function POST(request: Request) {
           isGroup,
           users: {
             connect: [
-              ...members.map((member: { id: string }) => ({
-                id: member.id,
+              ...members.map((member: { value: string }) => ({
+                id: member.value,
               })),
               {
                 id: currentUser.id,
@@ -90,6 +90,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(newConversation);
   } catch (error: any) {
+    console.log(error, "ERROR_NEW_CONVERSATION");
     return new NextResponse("Internal error", { status: 500 });
   }
 }
