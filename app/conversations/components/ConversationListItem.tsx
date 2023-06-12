@@ -9,7 +9,9 @@ import { format } from "date-fns";
 import { FullConversation } from "@/app/types";
 import { User, Conversation, Message } from "@prisma/client";
 import useOtherUser from "@/app/hooks/useOtherUser";
+
 import Avatar from "@/app/components/Avatar";
+import AvatarGroup from "@/app/components/AvatarGroup";
 
 interface ConversationListItemProps {
   conversation: FullConversation;
@@ -79,7 +81,11 @@ const ConversationListItem: React.FC<ConversationListItemProps> = ({
         selected ? "bg-neutral-100" : "bg-white"
       )}
     >
-      <Avatar user={otherUser} />
+      {conversation.isGroup ? (
+        <AvatarGroup users={conversation.users} />
+      ) : (
+        <Avatar user={otherUser} />
+      )}
       <div className="min-w-0 flex-1">
         <div className="focus:outline-none">
           <div
