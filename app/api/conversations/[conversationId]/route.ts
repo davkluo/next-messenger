@@ -11,7 +11,6 @@ export async function DELETE(
   request: Request,
   { params }: { params: IParams }
 ) {
-  console.log("got here");
   try {
     const { conversationId } = params;
     const currentUser = await getCurrentUser();
@@ -33,7 +32,6 @@ export async function DELETE(
       return new NextResponse("Invalid conversation ID", { status: 400 });
     }
 
-    console.log("got here too");
     // Delete only if the current user is a part of the conversation
     const deletedConversation = await prisma.conversation.deleteMany({
       where: {
@@ -43,8 +41,6 @@ export async function DELETE(
         },
       },
     });
-
-    console.log("didnt get here");
 
     return NextResponse.json(deletedConversation);
   } catch (error: any) {

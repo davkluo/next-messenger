@@ -9,7 +9,6 @@ interface UserListProps {
 }
 
 const UserList: React.FC<UserListProps> = ({ users }) => {
-  console.log(users);
   return (
     <aside
       className="
