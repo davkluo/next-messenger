@@ -9,6 +9,7 @@ import useOtherUser from "@/app/hooks/useOtherUser";
 
 import Avatar from "@/app/components/Avatar";
 import ConversationDrawer from "./ConversationDrawer";
+import AvatarGroup from "@/app/components/AvatarGroup";
 
 interface ConversationHeaderProps {
   conversation: Conversation & {
@@ -33,7 +34,7 @@ const ConversationHeader: React.FC<ConversationHeaderProps> = ({
   return (
     <>
       <ConversationDrawer
-        data={conversation}
+        conversation={conversation}
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
       />
@@ -66,7 +67,11 @@ const ConversationHeader: React.FC<ConversationHeaderProps> = ({
           >
             <HiChevronLeft size={32} />
           </Link>
-          <Avatar user={otherUser} />
+          {conversation.isGroup ? (
+            <AvatarGroup users={conversation.users} />
+          ) : (
+            <Avatar user={otherUser} />
+          )}
           <div className="flex flex-col">
             <div>
               {conversation.name ||

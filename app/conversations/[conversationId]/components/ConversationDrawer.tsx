@@ -10,19 +10,20 @@ import useOtherUser from "@/app/hooks/useOtherUser";
 
 import Avatar from "@/app/components/Avatar";
 import ConfirmModal from "./ConfirmModal";
+import AvatarGroup from "@/app/components/AvatarGroup";
 
 interface ConversationDrawerProps {
-  data: Conversation & { users: User[] };
+  conversation: Conversation & { users: User[] };
   isOpen: boolean;
   onClose: () => void;
 }
 
 const ConversationDrawer: React.FC<ConversationDrawerProps> = ({
-  data,
+  conversation,
   isOpen,
   onClose,
 }) => {
-  const otherUser = useOtherUser(data);
+  const otherUser = useOtherUser(conversation);
   const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
 
   const joinedDate = useMemo(() => {
@@ -30,13 +31,14 @@ const ConversationDrawer: React.FC<ConversationDrawerProps> = ({
   }, [otherUser.createdAt]);
 
   const title = useMemo(
-    () => data.name || `${otherUser.firstName} ${otherUser.lastName}`,
-    [data.name, otherUser.firstName, otherUser.lastName]
+    () => conversation.name || `${otherUser.firstName} ${otherUser.lastName}`,
+    [conversation.name, otherUser.firstName, otherUser.lastName]
   );
 
   const statusText = useMemo(
-    () => (data.isGroup ? `${data.users.length} members` : "Active"),
-    [data]
+    () =>
+      conversation.isGroup ? `${conversation.users.length} members` : "Active",
+    [conversation]
   );
 
   return (
@@ -163,7 +165,11 @@ const ConversationDrawer: React.FC<ConversationDrawerProps> = ({
                       >
                         <div className="flex flex-col items-center">
                           <div className="mb-2">
-                            <Avatar user={otherUser} />
+                            {conversation.isGroup ? (
+                              <AvatarGroup users={conversation.users} />
+                            ) : (
+                              <Avatar user={otherUser} />
+                            )}
                           </div>
                           <div>{title}</div>
                           <div className="text-sm text-gray-500">
@@ -222,7 +228,34 @@ const ConversationDrawer: React.FC<ConversationDrawerProps> = ({
                                 sm:px-6
                               "
                             >
-                              {!data.isGroup && (
+                              {conversation.isGroup && (
+                                <div>
+                                  <dt
+                                    className="
+                                      text-sm
+                                      font-medium
+                                      text-gray-500
+                                      sm:w-40
+                                      sm:flex-shrink-0
+                                    "
+                                  >
+                                    Emails
+                                  </dt>
+                                  <dd
+                                    className="
+                                      mt-1
+                                      text-sm
+                                      text-gray-900
+                                      sm:col-span-2
+                                    "
+                                  >
+                                    {conversation.users
+                                      .map((user) => user.email)
+                                      .join(", ")}
+                                  </dd>
+                                </div>
+                              )}
+                              {!conversation.isGroup && (
                                 <div>
                                   <dt
                                     className="
@@ -247,7 +280,7 @@ const ConversationDrawer: React.FC<ConversationDrawerProps> = ({
                                   </dd>
                                 </div>
                               )}
-                              {!data.isGroup && (
+                              {!conversation.isGroup && (
                                 <>
                                   <hr />
                                   <div>
