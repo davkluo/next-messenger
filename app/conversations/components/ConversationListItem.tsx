@@ -37,7 +37,9 @@ const ConversationListItem: React.FC<ConversationListItemProps> = ({
   }, [session.data?.user?.email]);
 
   const lastMessage = useMemo(() => {
-    return conversation.messages[conversation.messages.length - 1];
+    const messages = conversation.messages || [];
+
+    return messages[messages.length - 1];
   }, [conversation.messages]);
 
   const lastMessageText = useMemo(() => {

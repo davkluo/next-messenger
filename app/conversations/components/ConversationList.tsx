@@ -2,12 +2,15 @@
 
 import clsx from "clsx";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { MdOutlineGroupAdd } from "react-icons/md";
+import { useSession } from "next-auth/react";
+import { find } from "lodash";
 
 import { FullConversation } from "@/app/types";
 import useConversation from "@/app/hooks/useConversation";
 import { User } from "@prisma/client";
+import { pusherClient } from "@/app/libs/pusher";
 
 import ConversationListItem from "./ConversationListItem";
 import GroupChatModal from "./GroupChatModal";
@@ -21,12 +24,55 @@ const ConversationList: React.FC<ConversationListProps> = ({
   users,
   initialConversations,
 }) => {
+  const session = useSession();
+  const router = useRouter();
+
   const [conversations, setConversations] = useState(initialConversations);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const router = useRouter();
-
   const { isOpen, conversationId } = useConversation();
+
+  const pusherKey = useMemo(() => {
+    return session.data?.user?.email;
+  }, [session.data?.user?.email]);
+
+  useEffect(() => {
+    if (!pusherKey) {
+      return;
+    }
+
+    pusherClient.subscribe(pusherKey);
+
+    const newConversationHandler = (conversationToAdd: FullConversation) => {
+      setConversations((prevConversations) => {
+        if (find(prevConversations, { id: conversationToAdd.id })) {
+          return prevConversations;
+        }
+        return [conversationToAdd, ...prevConversations];
+      });
+    };
+
+    const updateConversationHandler = (
+      conversationToUpdate: FullConversation
+    ) => {
+      setConversations((prevConversations) =>
+        prevConversations.map((prevConversation) =>
+          prevConversation.id === conversationToUpdate.id
+            ? { ...prevConversation, messages: conversationToUpdate.messages }
+            : prevConversation
+        )
+      );
+    };
+
+    pusherClient.bind("conversation:new", newConversationHandler);
+    pusherClient.bind("conversation:update", updateConversationHandler);
+
+    return () => {
+      pusherClient.unsubscribe(pusherKey);
+      pusherClient.unbind("conversation:new", newConversationHandler);
+      pusherClient.unbind("conversation:update", updateConversationHandler);
+    };
+  }, [pusherKey]);
 
   return (
     <>
