@@ -2,9 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
+import { find } from "lodash";
 
 import { FullMessage } from "@/app/types";
 import useConversation from "@/app/hooks/useConversation";
+import { pusherClient } from "@/app/libs/pusher";
 
 import MessageBox from "./MessageBox";
 
@@ -23,6 +25,40 @@ const ConversationBody: React.FC<ConversationBodyProps> = ({
 
   useEffect(() => {
     axios.post(`/api/conversations/${conversationId}/seen`);
+  }, [conversationId]);
+
+  useEffect(() => {
+    // Now listening to this channel
+    pusherClient.subscribe(conversationId);
+
+    // Scroll down to newest message
+    bottomRef?.current?.scrollIntoView();
+
+    const messageHandler = (message: FullMessage) => {
+      // Mark new message as seen
+      axios.post(`/api/conversations/${conversationId}/seen`);
+
+      setMessages((prevMessages) => {
+        // Check that we don't already have the message
+        if (find(prevMessages, { id: message.id })) {
+          return prevMessages;
+        }
+
+        return [...prevMessages, message];
+      });
+
+      // Scroll down to new message
+      bottomRef?.current?.scrollIntoView();
+    };
+
+    // Handle event
+    pusherClient.bind("messages:new", messageHandler);
+
+    // Unsubscribe and unbind on dismount
+    return () => {
+      pusherClient.unsubscribe(conversationId);
+      pusherClient.unbind("messages:new", messageHandler);
+    };
   }, [conversationId]);
 
   return (
