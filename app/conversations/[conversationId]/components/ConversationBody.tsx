@@ -30,34 +30,38 @@ const ConversationBody: React.FC<ConversationBodyProps> = ({
   useEffect(() => {
     // Now listening to this channel
     pusherClient.subscribe(conversationId);
-
-    // Scroll down to newest message
     bottomRef?.current?.scrollIntoView();
 
-    const messageHandler = (message: FullMessage) => {
-      // Mark new message as seen
+    const newMessageHandler = (messageToAdd: FullMessage) => {
       axios.post(`/api/conversations/${conversationId}/seen`);
 
       setMessages((prevMessages) => {
-        // Check that we don't already have the message
-        if (find(prevMessages, { id: message.id })) {
+        if (find(prevMessages, { id: messageToAdd.id })) {
           return prevMessages;
         }
 
-        return [...prevMessages, message];
+        return [...prevMessages, messageToAdd];
       });
 
-      // Scroll down to new message
       bottomRef?.current?.scrollIntoView();
     };
 
-    // Handle event
-    pusherClient.bind("messages:new", messageHandler);
+    const updateMessageHandler = (messageToUpdate: FullMessage) => {
+      setMessages((prevMessages) =>
+        prevMessages.map((prevMessage) =>
+          prevMessage.id === messageToUpdate.id ? messageToUpdate : prevMessage
+        )
+      );
+    };
 
-    // Unsubscribe and unbind on dismount
+    // Listen for and handle events
+    pusherClient.bind("messages:new", newMessageHandler);
+    pusherClient.bind("message:update", updateMessageHandler);
+
     return () => {
       pusherClient.unsubscribe(conversationId);
-      pusherClient.unbind("messages:new", messageHandler);
+      pusherClient.unbind("messages:new", newMessageHandler);
+      pusherClient.unbind("message:update", updateMessageHandler);
     };
   }, [conversationId]);
 
