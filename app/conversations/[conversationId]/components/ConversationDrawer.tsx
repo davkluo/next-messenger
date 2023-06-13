@@ -7,6 +7,7 @@ import { IoClose, IoTrash } from "react-icons/io5";
 
 import { Conversation, User } from "@prisma/client";
 import useOtherUser from "@/app/hooks/useOtherUser";
+import useActiveList from "@/app/hooks/useActiveList";
 
 import Avatar from "@/app/components/Avatar";
 import ConfirmModal from "./ConfirmModal";
@@ -26,6 +27,9 @@ const ConversationDrawer: React.FC<ConversationDrawerProps> = ({
   const otherUser = useOtherUser(conversation);
   const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
 
+  const { members } = useActiveList();
+  const isActive = members.indexOf(otherUser?.email!) !== -1;
+
   const joinedDate = useMemo(() => {
     return format(new Date(otherUser.createdAt), "PP");
   }, [otherUser.createdAt]);
@@ -35,11 +39,13 @@ const ConversationDrawer: React.FC<ConversationDrawerProps> = ({
     [conversation.name, otherUser.firstName, otherUser.lastName]
   );
 
-  const statusText = useMemo(
-    () =>
-      conversation.isGroup ? `${conversation.users.length} members` : "Active",
-    [conversation]
-  );
+  const statusText = useMemo(() => {
+    if (conversation.isGroup) {
+      return `${conversation.users.length} members`;
+    }
+
+    return isActive ? "Active" : "Offline";
+  }, [conversation, isActive]);
 
   return (
     <>
